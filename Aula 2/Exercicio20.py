@@ -13,9 +13,12 @@ print (nome.upper())
 print (nome.lower())
 
 #Quantidade de letras sem espaços
-nome.split [nome]
-print (nome.count [1])
+nome_sem_espaco = nome.replace("", "")
+quantidade_de_letras = len(nome_sem_espaco)
+print(quantidade_de_letras)
 
 #Quantas letras tem o primeiro nome
-
-
+nome = input("Insira o nome: ")
+sobrenome = input ("Insira o sobrenome: ")
+contagem_de_nome = len(nome)
+print (contagem_de_nome)
