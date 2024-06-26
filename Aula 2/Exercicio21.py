@@ -10,7 +10,6 @@ name = input ("Escreva seu nome: ")
 print (name.count("a"))
 
 #Em que posição aparece a primeira vez
+print(name.find("a"))
 
-
-
-
+#Em que posição aparece a última vez
