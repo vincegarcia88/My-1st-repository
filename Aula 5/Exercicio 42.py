@@ -1,3 +1,5 @@
+'''Crie o jogo da adivinha v2.0. O
+computador deve “pensar” num número de
 0 a 10 e o utilizador deve adivinhar o
 número escolhido. Só que agora o
 jogador vai tentar adivinhar até
@@ -17,3 +19,4 @@ while True:
     else:
         print(f"Errou! Tente novamente. O número era {numero} . ")
         continue
+
