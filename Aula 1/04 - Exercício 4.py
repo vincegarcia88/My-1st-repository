@@ -1,0 +1,5 @@
+print("-_-_-_-_-_-_-_-")
+print ("x.x.x.x.x.x.x.x.x\n")
+print("O MEU PROGRAMA\n")
+print ("x.x.x.x.x.x.x.x.x.")
+print("-_-_-_-_-_-_-_-")
