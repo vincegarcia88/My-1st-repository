@@ -1,1 +1,0 @@
-#Crie o jogo pedra, papel e tesoura
