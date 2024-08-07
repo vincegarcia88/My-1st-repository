@@ -1,0 +1,99 @@
+-- Versão 07/08 com explicações e atualizações
+
+-- Exercício 1 - Criação de base de Dados e Modelo de Dados - Empresa de Táxis
+
+-- Considere o seguinte problema:
+
+-- Uma empresa de táxis pretende implementar uma base de dados com a seguinte informação:
+
+-- A empresa tem vários táxis. Cada táxi tem, para além da matrícula, um nome, a marca, o número de lugares,
+-- o ano de fabrico, a cor e se tem GPS.
+-- Existem várias marcas. Para cada marca é necessário guardar o seu id e nome. 
+-- Na empresa trabalham vários condutores de táxi.
+-- Para cada condutor é necessário guardar o seu nome, morada e data de nascimento, 
+-- além do número da sua carta de condução.
+
+-- Existem condutores que pela sua idade estão apenas em funções administrativas dentro da empresa,
+-- estando impossibilitados de conduzir.
+
+-- Cada táxi faz várias viagens. 
+-- Cada viagem deve ter a indicação do código, da data e hora em que se efetua, do local de partida
+-- e do local de destino, bem como do número de pessoas que transportou e o preço.
+-- Cada viagem de um dado táxi é feita por um condutor apenas.
+
+
+CREATE DATABASE IF NOT EXISTS empresa_taxi;
+
+USE empresa_taxi;
+
+CREATE TABLE IF NOT EXISTS marcas(
+	marca_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    marca_nome VARCHAR (50) NOT NULL
+    );
+
+CREATE TABLE IF NOT EXISTS taxis(
+	taxi_id VARCHAR (50) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	taxi_nome VARCHAR (50) NOT NULL,
+    marca_id INT NOT NULL,
+    numero_lugares INT NOT NULL,
+    ano_fabrico YEAR NOT NULL,
+    cor_taxi VARCHAR (50) NOT NULL,
+    GPS BOOLEAN NOT NULL,
+    CONSTRAINT fk_taxis_marcas FOREIGN KEY (marca_id) REFERENCES marcas(marca_id)
+    );
+    
+    CREATE TABLE IF NOT EXISTS condutores(
+    condutor_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    condutor_nome VARCHAR (100) NOT NULL,
+    condutor_morada VARCHAR (100) NOT NULL,
+    data_nascimento DATE NOT NULL
+    );
+    
+    CREATE TABLE IF NOT EXISTS conduzem (
+    id_conducao INT AUTO_INCREMENT,
+    data_conducao DATE,
+    id_condutor VARCHAR (50) NOT NULL UNIQUE,
+    taxi_id VARCHAR (10) NOT NULL AUTO_INCREMENT
+    );
+    
+    CREATE TABLE IF NOT EXISTS viagem (
+    id_viagem INT AUTO_INCREMENT PRIMARY KEY,
+    data_viagem DATE NOT NULL,
+    hora_ida_viagem DATETIME NOT NULL DEFAULT NOW(),
+    -- se você inserir um novo registro sem especificar um valor para hora_ida_viagem, 
+    -- o banco de dados automaticamente atribuirá a data e a hora atuais a essa coluna.
+    
+    hora_volta_viagem DATETIME NOT NULL,
+    -- não pode conter valores nulos, obrigando que um valor de data e hora 
+    -- seja sempre fornecido ao inserir novos registros na tabela.
+    
+	morada_partida INT, 
+    morada_chegada INT,
+    local_destino VARCHAR (50) NOT NULL,
+    numero_passageiros TINYINT NOT NULL AUTO_INCREMENT,
+    -- O TINYINT é uma excelente escolha quando você sabe que os valores que irá armazenar 
+    -- estão dentro do intervalo de -128 a 127 ou 0 a 255 para o modo unsigned. 
+    -- Usá-lo pode resultar em uma economia de espaço significativo em tabelas grandes, 
+    -- especialmente se muitos dos seus dados podem ser reduzidos a um pequeno intervalo de inteiros.
+    
+    preco_viagem DECIMAL (5,2),
+    -- Por exemplo, DECIMAL(10, 2) pode armazenar números de até 10 dígitos, 
+    -- dos quais 2 estão após a vírgula. 
+    -- Isso significa que o maior número que poderia ser armazenado 
+    taxi_id VARCHAR (10) NOT NULL
+    );
+    
+    DELETE
+    FROM <nome_tabela>
+    WHERE ID=
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
