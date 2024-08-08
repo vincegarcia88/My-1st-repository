@@ -1,4 +1,4 @@
--- 08/08
+-- 08/08 - Aula 1 a 6
 
 -- Tipos primitivos (Guanabara)
 
@@ -30,3 +30,81 @@ peso float,
 altura float,
 nacionalidade varchar (20)
 );
+
+==============================================================================
+
+-- Iniciei apagando a antiga tabela ao usar DROP DATABASE cadastro_test
+
+-- CONSTRAINTS:
+-- Not null: Obrigatório ter algo digitado
+
+CREATE DATABASE IF NOT EXISTS cadastro_test
+default character set utf8
+default collate utf8_general_ci;
+
+USE cadastro_test;
+
+CREATE TABLE IF NOT EXISTS pessoas_test(
+id INT NOT NULL AUTO_INCREMENT, -- Auto Increment = Cadastra as pessoas com códigos diferentes automaticamente
+nome VARCHAR (30) NOT NULL,
+idade date,
+sexo enum ('M' , 'F'), -- Só vai aceitar as duas opções propostas
+peso decimal (5,2), -- 5 números e 2 atrás da vírgula
+altura decimal (3,2),
+nacionalidade varchar (20) Default 'Brasil', -- Default pq se ngm digitar nada é Brasil
+PRIMARY KEY (id) -- Para definir a PRIMARY KEY
+) default charset = utf8;
+
+-- A chave primária é o registro com um valor único
+
+=====================================================
+
+UPDATE <nome tabela>
+SET <coluna> = <valor>,
+Where <coluna> = <valor>,
+
+And / or
+
+========================================================
+
+CREATE DATABASE cadastro_1;
+
+CREATE TABLE IF NOT EXISTS pessoas_1(
+id INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR (30),
+idade DATE,
+sexo ENUM ('M' , 'F'),
+peso DECIMAL (5,2),
+altura DECIMAL (3,2),
+nacionalidade VARCHAR (20) DEFAULT 'Brasil',
+PRIMARY KEY (id)
+);
+
+=======================================================
+
+-- Inserindo dados na tabela
+
+INSERT INTO pessoas_1
+(nome, idade, sexo, peso, altura, nacionalidade) -- Uso facultativo deste campo
+VALUES
+('Adalgisa','1920-05-22', 'F', '70.6', '1.62', 'EUA'),
+('Bia', '1995-03-01','F', '55', '1.57', 'Italia'),
+('Cozy', '1963-06-16', 'M', '79.1', '1.83','Inglaterra');
+-- Não é preciso especificar o ID pq está em Auto Increment
+
+SELECT * from pessoas_1; -- Para mostrar a tabela
+
+=======================================================
+
+-- Alterando a estrutura da tabela
+
+describe pessoas_test; -- Visualiza a tabela pessoas_test
+
+ALTER TABLE pessoas_test
+ADD COLUMN profissao VARCHAR (30), -- Adicionar profissão à coluna pessoas
+
+DROP COLUMN profissao, -- Eliminar profissão
+
+ADD COLUMN profissao VARCHAR (30) AFTER nome;
+
+
