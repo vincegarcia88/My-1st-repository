@@ -1,0 +1,32 @@
+-- 08/08
+
+-- Tipos primitivos (Guanabara)
+
+-- 1. Numérico (Inteiro, lógico, real)
+-- 2. Data / Tempo (Date, DateTime, Timestamp, Time, Year)
+-- 3. Literal (Caractere, texto, binário, coleção)
+-- 4. Espacial 
+
+-- 1. Numérico / Inteiro (Tinyint, Smallint, Int, Mediumint, Bigint)
+-- 1. Numérico / Real (Decimal, float, Double, Real)
+-- 1. Numérico / Lógico (Bit, Boolean) (Sim/Não, V/F, 0 ou 1...)
+
+-- 3. Caractere (Char, Varchar)
+-- 3. Texto (Tinytext, text, Mediumtext, Longtext) (Para textos longos)
+-- 3. Binário (Tinyblob, blob, Mediumblob, Longblob) (Permite guardar uma imagem)
+-- 3. Coleção (Enum, Set)
+
+-- 4. Geometry, polygon, point, multipolygon (Guarda informações sobre volumétricos)
+
+-- =*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+
+CREATE DATABASE cadastro_test1;
+
+CREATE TABLE pessoas1 (
+nome VARCHAR (30),
+idade TINYINT,
+sexo char (1),
+peso float,
+altura float,
+nacionalidade varchar (20)
+);
