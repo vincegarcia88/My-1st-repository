@@ -6,6 +6,9 @@ c) O maior valor da terceira linha.'''
 
 matriz = list()
 
+#Primeiro FOR roda 3x e só passa para o seguinte
+#quando o FOR interno terminar
+
 for linha in range(0, 3):
     numeros = list()
     for coluna in range(0, 3):
@@ -32,8 +35,9 @@ for linha in range(0, 3):
     soma_segunda_coluna += matriz[linha][1]
 
 # Maior valor da terceira linha (índice 2)
+maior_terceira_linha = 0
 for linha in range (0,3):
-    maior_terceira_linha = (matriz[2])  #Terminar de fazer essa parte
+    maior_terceira_linha = matriz[linha][2]
 
 # Exibir os resultados
 print(f"\nA soma de todos os valores pares é: {soma_pares}")
