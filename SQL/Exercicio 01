@@ -1,0 +1,190 @@
+Exercicio 01
+
+1. Escreva o código em SQL necessário para criar todas as tabelas representadas.
+2. Insira pelo menos 5 registos em cada uma das tabelas criadas.
+3. Escreva consultas em SQL que permitam:
+a. Listar a marca e o modelo dos carros com 3 portas.
+b. Listar os fornecedores que não tenham número de telefone, mas tenham um 
+contacto, ordenado pelo nome.
+c. Listar todos modelos de carro que existem na base de dados, sem repetições.
+d. Listar o nome e a localidade do fornecedor com o preço da compra maior.
+e. Listar os fornecedores cujo número de telefone começa por 91.
+f. Listar todos os fornecedores cujo código Postal não começa por 4400.
+g. Listar o número de compras por cor, ordenado pelo número de compras, de 
+forma descendente.
+h. Listar o nome dos fornecedores dos carros que ainda não têm nenhuma compra.
+i. Listar os vendedores que já tiveram mais de 5 carros comprados.
+j. Listar a cor de carro mais comprada.
+k. Listar o nome do fornecedor com mais compras em 2022.
+l. Listar o carro que foi vendido mais recentemente.
+
+CREATE DATABASE loja;
+
+CREATE TABLE IF NOT EXISTS carros (
+codigo_carro CHAR (8) NOT NULL UNIQUE CHECK (matricula REGEXP '^[0-9A-Z]{2}-[0-9A-Z]{2}-[0-9A-Z]{2}$'),
+marca VARCHAR (10),
+modelo VARCHAR (10) NOT NULL,
+preco_unitario FLOAT,
+cilindrada INT, 
+potencia INT,
+nr_portas TINYINT (8), 
+descricao_produto VARCHAR (30),
+descontinuado BOOLEAN,
+PRIMARY KEY (codigo_carro),
+CONSTRAINT fk_carros_compras_ FOREIGN KEY (codigo_carro) REFERENCES compras_(codigo_carro)
+);
+
+
+CREATE TABLE IF NOT EXISTS fornecedores_ (
+codigo_fornecedor TINYINT NOT NULL,
+nome_empresa VARCHAR (30),
+endereco VARCHAR (30),
+codigo_postal CHAR (8) NOT NULL CHECK (cod_postal REGEXP '^[0-9](4)-[0-9]{3}$'),
+localidade VARCHAR (100) NOT NULL,
+telefone INT,
+nr_contribuinte INT NOT NULL,
+contacto INT NOT NULL,
+PRIMARY KEY (codigo_fornecedor),
+CONSTRAINT fk_fornecedores__compras_ FOREIGN KEY (codigo_fornecedor) REFERENCES compras_(codigo_fornecedor)
+);
+
+CREATE TABLE IF NOT EXISTS compras_(
+codigo_compra INT NOT NULL,
+codigo_carro CHAR (8) NOT NULL UNIQUE CHECK (matricula REGEXP '^[0-9A-Z]{2}-[0-9A-Z]{2}-[0-9A-Z]{2}$'),
+codigo_fornecedor TINYINT NOT NULL,
+data_compra DATE NOT NULL,
+preco_compra FLOAT,
+cor INT NOT NULL,
+PRIMARY KEY (codigo_compra),
+CONSTRAINT fk_compras__carros FOREIGN KEY (codigo_carro) REFERENCES carros(codigo_carro),
+CONSTRAINT fk_compras__fornecedores FOREIGN KEY (codigo_fornecedor) REFERENCES fornecedores_ (codigo_fornecedor),
+CONSTRAINT fk_compras__vendas_ FOREIGN KEY (codigo_compra) REFERENCES vendas_ (codigo_compra)
+);
+
+CREATE TABLE IF NOT EXISTS vendas_ (
+codigo_compra INT NOT NULL,
+nrBI_cliente INT NOT NULL UNIQUE,
+codigo_vendedor INT NOT NULL,
+preco FLOAT,
+data_compra DATE NOT NULL,
+forma_pagamento TINYINT,
+PRIMARY KEY (codigo_compra),
+CONSTRAINT fk_vendas__compras_ FOREIGN KEY (codigo_compra) REFERENCES compras_ (codigo_compra),
+CONSTRAINT fk_vendas__clientes_ FOREIGN KEY (codigo_compra) REFERENCES clientes_(nrBI_cliente),
+CONSTRAINT fk_vendas__vendedores_ FOREIGN KEY (codigo_vendedor) REFERENCES vendedores_(codigo_vendedor)
+);
+
+CREATE TABLE IF NOT EXISTS clientes_ (
+nrBI_cliente INT NOT NULL UNIQUE NOT NULL,
+nome_cliente VARCHAR (30) NOT NULL,
+endereco_cliente VARCHAR (30),
+codigo_postal_cliente CHAR (8) NOT NULL CHECK (cod_postal REGEXP '^[0-9](4)-[0-9]{3}$'),
+localidade_cliente VARCHAR (100) NOT NULL,
+telefone_cliente INT,
+data_nasc_cliente DATE NOT NULL,
+contribuinte TINYINT NOT NULL,
+PRIMARY KEY (nrBI_cliente),
+CONSTRAINT fk_clientes__vendas_ FOREIGN KEY (nrBI_cliente) REFERENCES vendas_(nrBI_cliente)
+);
+
+CREATE TABLE IF NOT EXISTS vendedores_ (
+codigo_vendedor INT NOT NULL UNIQUE,
+nome_vendedor VARCHAR (30) NOT NULL,
+endereco_vendedor VARCHAR (30) NOT NULL,
+codigo_postal_vendedor CHAR (8) NOT NULL CHECK (cod_postal REGEXP '^[0-9](4)-[0-9]{3}$'),
+localidade_vendedor VARCHAR (100) NOT NULL auto_increment,
+telefone_vendedor INT,
+contribuinte_vendedor TINYINT NOT NULL UNIQUE,
+nrBI_vendedor INT NOT NULL UNIQUE,
+PRIMARY KEY (codigo_vendedor),
+CONSTRAINT fk_vendedores__vendas_ FOREIGN KEY (codigo_vendedor) REFERENCES vendas_(codigo_vendedor)
+);
+
+-- Listar a marca e o modelo do carro com 3 portas
+
+SELECT marca, modelo
+FROM carros
+WHERE nr_portas = 3;
+
+--  Listar os fornecedores que não tenham número de telefone, 
+-- mas tenham um contacto, ordenado pelo nome.
+
+SELECT nome_empresa
+FROM fornecedores_
+WHERE telefone IS NULL AND contacto IS NOT NULL
+ORDER BY nome_empresa;
+
+-- Listar todos modelos de carro que existem na base de dados, sem repetições.
+SELECT DISTINCT modelo
+FROM carros;
+
+-- Listar o nome e a localidade do fornecedor com o preço da compra maior.
+
+SELECT f.nome_empresa, f.localidade, c.preco_compra
+FROM fornecedores_ f
+JOIN compras_ c ON f.codigo_fornecedor = c.codigo_fornecedor
+ORDER BY c.preco_compra DESC
+LIMIT 1;
+
+-- Listar os fornecedores cujo número de telefone começa por 91.
+SELECT nome_empresa
+FROM fornecedores_
+WHERE telefone LIKE '91%';
+
+-- Listar todos os fornecedores cujo código postal não começa por 4400.
+SELECT nome_empresa
+FROM fornecedores_
+WHERE codigo_postal NOT LIKE '4400%';
+
+-- Listar o número de compras por cor, ordenado pelo número de compras de forma descendente.
+SELECT cor, COUNT(*) AS numero_de_compras
+FROM compras_
+GROUP BY cor
+ORDER BY numero_de_compras DESC;
+
+-- Listar o nome dos fornecedores dos carros que ainda não têm nenhuma compra.
+SELECT f.nome_empresa
+FROM fornecedores_ f
+LEFT JOIN compras_ c ON f.codigo_fornecedor = c.codigo_fornecedor
+WHERE c.codigo_compra IS NULL;
+
+-- Listar os vendedores que já tiveram mais de 5 carros comprados.
+SELECT v.nome_vendedor, COUNT(c.codigo_compra) AS total_compras
+FROM vendedores_ v
+JOIN vendas_ vnd ON v.codigo_vendedor = vnd.codigo_vendedor
+JOIN compras_ c ON c.codigo_compra = vnd.codigo_compra
+GROUP BY v.nome_vendedor
+HAVING COUNT(c.codigo_compra) > 5;
+
+-- Listar a cor de carro mais comprada.
+SELECT cor, COUNT(*) AS total_compras
+FROM compras_
+GROUP BY cor
+ORDER BY total_compras DESC
+LIMIT 1;
+
+-- Listar o nome do fornecedor com mais compras em 2022.
+SELECT f.nome_empresa, COUNT(c.codigo_compra) AS total_compras
+FROM fornecedores_ f
+JOIN compras_ c ON f.codigo_fornecedor = c.codigo_fornecedor
+WHERE YEAR(c.data_compra) = 2022
+GROUP BY f.nome_empresa
+ORDER BY total_compras DESC
+LIMIT 1;
+
+-- Listar o carro que foi vendido mais recentemente
+SELECT c.codigo_carro
+FROM carros c
+JOIN vendas_ v ON c.codigo_carro = v.codigo_compra
+ORDER BY v.data_compra DESC
+LIMIT 1;
+
+-- JOIN 
+-- Retorna apenas as linhas que possuem correspondência em ambas as tabelas. 
+-- Se não houver correspondência, a linha será excluída do resultado.
+
+-- FULL JOIN 
+-- Retorna todas as linhas quando há correspondência em uma das tabelas ou em ambas. 
+-- Se não houver correspondência em uma tabela, 
+-- retorna NULL para as colunas daquela tabela.
+
