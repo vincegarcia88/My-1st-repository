@@ -1,0 +1,253 @@
+Exercicio 01
+Resolução do Professor
+
+-- 1
+create database exerc4;
+use exerc4;
+
+create table carros(
+	codigodocarro int auto_increment,
+    marca varchar(50) not null,
+    modelo varchar(50) not null,
+    precounitario double (10,2) not null,
+    cilindrada int(4) not null,
+    potencia int(4) not null,
+    nrportas tinyint(1) not null,
+    descricaodoproduto text null,
+    descontinuado boolean default false,
+    primary key (codigodocarro)
+);
+
+create table fornecedores(
+	codigodofornecedor int auto_increment,
+    nomedaempresa varchar(50) not null,
+    endereco varchar(100) not null,
+    codigopostal char(8) not null,
+    localidade varchar(50) not null,
+    telefone int(9) null,
+    nrcontribuinte int(9) unique not null,
+    contacto varchar(50) null,
+    primary key (codigodofornecedor)
+);
+
+create table clientes(
+	nrbi int(8) unique not null,
+    nome varchar(100) not null,
+    endereco varchar(100) not null,
+    codigopostal char(8) not null,
+    localidade varchar(50) not null,
+    telefone int(9) not null,
+    datadenascimento date not null,
+    nrcontribuinte int(9) unique not null,
+    primary key (nrbi)
+);
+
+create table vendedores(
+	codigodovendedor int auto_increment,
+    nome varchar(100) not null,
+    endereco varchar(100) not null,
+    codigopostal char(8) not null,
+    localidade varchar(50) not null,
+    telefone int(9) not null,
+    nrcontribuinte int(9) unique not null,
+    nrbi int(8) unique not null,
+    primary key (codigodovendedor)
+);
+
+create table compras(
+	codigodacompra int auto_increment,
+    datadacompra date not null,
+    precocompra double (10,2) not null,
+    cor varchar(50) not null,
+    codigodocarro int not null,
+    codigodofornecedor int not null,
+    primary key (codigodacompra),
+    constraint cod_carro foreign key (codigodocarro) references carros(codigodocarro) on delete no action,
+    constraint cod_fornecedor foreign key (codigodofornecedor) references fornecedores(codigodofornecedor) on delete no action
+);
+
+create table vendas(
+	codigodacompra int not null,
+    nrbi_cliente int(8) not null,
+    codigodovendedor int not null,
+    preco double (10,2) not null,
+    data date not null,
+    formadepagamento enum('Numerário', 'Cheque', 'Multibanco', 'Paypal', 'MbWay', 'Cripto') not null,
+    primary key (codigodacompra),
+    constraint cod_compra foreign key (codigodacompra) references compras(codigodacompra) on delete no action,
+    constraint bi_cliente foreign key (nrbi_cliente) references clientes(nrbi) on delete no action,
+    constraint cod_vendedor foreign key (codigodovendedor) references vendedores(codigodovendedor) on delete no action
+);
+
+-- 2
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Toyota','Uno',12500.00,1200,120,3);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Fiat','Paiva',17000.00,1100,130,4);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Toyota','Duo',9500.00,1700,140,3);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Fiat','Punto',11900.00,1800,90,4);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Ford','Pinto',18800.00,2400,110,4);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Renaut','306',16700.00,2200,160,5);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Toyota','Duo',15400.00,2100,120,5);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Ford','Silva',13400.00,1800,170,3);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Fiat','Duo',9500.00,1500,120,3);
+insert into carros (marca,modelo,precounitario,cilindrada,potencia,nrportas) values ('Renaut','206',9100.00,2600,120,4);
+select * from carros;
+
+insert into fornecedores (nomedaempresa,endereco,codigopostal,localidade,telefone,nrcontribuinte,contacto) values ('Meireles e Filho', 'Rua que Sobe 123', '4400-123', 'Porto', 224213412,433747343,'meireles@gmail.com');
+insert into fornecedores (nomedaempresa,endereco,codigopostal,localidade,telefone,nrcontribuinte,contacto) values ('Camilo e Sobrinho', 'Rua que Desce 321', '5100-323', 'Lisboa',null,213122143,'camilo@gmail.com');
+insert into fornecedores (nomedaempresa,endereco,codigopostal,localidade,telefone,nrcontribuinte,contacto) values ('Sem Nome', 'Rua Direita 6123', '4100-523', 'Porto', 917665444,954247343,null);
+insert into fornecedores (nomedaempresa,endereco,codigopostal,localidade,telefone,nrcontribuinte,contacto) values ('Com Nome', 'Rua Esquerda 4123', '4500-923', 'Braga',null,213747343,'silva@gmail.com');
+insert into fornecedores (nomedaempresa,endereco,codigopostal,localidade,telefone,nrcontribuinte,contacto) values ('Pinto e Irmão', 'Rua Pinto 23', '4400-523', 'Algarve', 912445340,943473434,'pinto@gmail.com');
+select * from fornecedores;
+
+insert into clientes (nrbi,nome,endereco,codigopostal,localidade,telefone,datadenascimento,nrcontribuinte) values (95843574,'Manuel Fonseca', 'Travessa Cima 424', '4321-542', 'Porto',227546353,'1950-11-04',583469042);
+insert into clientes (nrbi,nome,endereco,codigopostal,localidade,telefone,datadenascimento,nrcontribuinte) values (28284395,'Figo Silva', 'Rotunda Baixo 24', '2341-652', 'Lisboa',213442353,'1959-09-14',413027798);
+insert into clientes (nrbi,nome,endereco,codigopostal,localidade,telefone,datadenascimento,nrcontribuinte) values (59230820,'Jacinto Leite', 'Praçeta Direita 214', '4561-578', 'Porto',224234353,'1991-05-17',148631969);
+insert into clientes (nrbi,nome,endereco,codigopostal,localidade,telefone,datadenascimento,nrcontribuinte) values (31837219,'Maria Matos', 'Travessa Esquerda 874', '7621-562', 'Algarve',234546545,'1973-04-24',587441109);
+insert into clientes (nrbi,nome,endereco,codigopostal,localidade,telefone,datadenascimento,nrcontribuinte) values (86411315,'Pinto Meireles', 'Rua Direita 344', '4321-342', 'Lisboa',215342563,'1981-08-20',634139751);
+insert into clientes (nrbi,nome,endereco,codigopostal,localidade,telefone,datadenascimento,nrcontribuinte) values (36176029,'Ana Borges', 'Rua Esquerda 465', '5621-452', 'Algarve',237565645,'1949-01-08',196983177);
+select * from clientes;
+
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Rui Fonseca','Largo de Camões 9','8004-006','Faro',239530413,189614508,88433088);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Fracisco Silva','Rua Brites de Almeida 12','8434-326','Faro',234695361,935752915,81381914);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Miguel Guedes','Rua Doutor Cândido Guerreiro 13','8043-126','Faro',231287079,460134332,74865387);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Patricia Pinto','Rua Camilo Castelo Branco 36','1431-324','Lisboa',216102021,889570595,32440382);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Carlota Joaquina','Rua Dom Luís de Noronha 40','1069-433','Lisboa',214605524,111828164,45749549);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Mariana Diniz','Avenida João Crisóstomo 89','1349-534','Lisboa',213855990,892109969,81393940);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Acácio Tiago','Rua Quinta 551','4150-009','Porto',225312723,981430951,45660647);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Mário Silva','Rua António José de Almeida 43','4430-122','Porto',228357825,272687113,19492539);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Gerónimo Pombal','Rua António José da Costa 29','4540-549','Porto',221607003,774480853,23663124);
+insert into vendedores (nome,endereco,codigopostal,localidade,telefone,nrcontribuinte,nrbi) values ('Guedes Azevedo','Rua António Mariz Carneiro 54','4230-329','Porto',226285268,696002032,44576340);
+select * from vendedores;
+
+
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (2,1,'2022-09-21',10582.00,'Azul');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (3,1,'2022-04-12',20325.00,'Preto');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (1,3,'2022-10-01',8534.00,'Preto');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (5,3,'2021-03-20',8805.00,'Azul');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (6,5,'2021-11-05',7092.00,'Preto');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (7,2,'2023-01-17',14951.00,'Vermelho');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (1,2,'2021-09-11',20182.00,'Azul');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (6,1,'2021-01-22',10925.00,'Preto');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (3,1,'2023-08-24',9734.00,'Preto');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (4,5,'2023-07-21',6405.00,'Azul');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (5,1,'2022-12-05',8492.00,'Preto');
+insert into compras (codigodocarro,codigodofornecedor,datadacompra,precocompra,cor) values (2,2,'2022-04-07',11151.00,'Vermelho');
+select * from compras;
+
+
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (3,95843574,3,10582.00,'2022-09-21','Numerário');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (9,28284395,2,20325.00,'2020-04-12','Multibanco');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (1,59230820,3,8534.00,'2022-10-01','Cheque');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (2,31837219,2,8805.00,'2021-03-20','Cheque');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (12,86411315,1,7092.00,'2021-11-05','MbWay');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (7,36176029,2,14951.00,'2023-01-17','Numerário');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (6,95843574,4,20182.00,'2021-09-11','Paypal');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (4,28284395,4,10925.00,'2021-01-22','Multibanco');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (5,59230820,3,9734.00,'2023-02-24','Numerário');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (8,31837219,2,6405.00,'2023-02-21','Multibanco');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (10,86411315,2,8492.00,'2019-12-05','Multibanco');
+insert into vendas (codigodacompra,nrbi_cliente,codigodovendedor,preco,data,formadepagamento) values (11,36176029,2,11151.0,'2018-04-07','Numerário');
+select * from vendas;
+
+-- 3a Listar a marca e o modelo dos carros com 3 portas.
+select concat(marca," ",modelo) as 'Marca e o Modelo dos carros com 3 portas'
+from carros
+where nrportas=3;
+
+-- 3b Listar  os  fornecedores  que  não  tenham  número  de  telefone,  mas  tenham  um contacto, ordenado pelo nome.
+select *
+from fornecedores
+where telefone is null and contacto is not null order by nomedaempresa;
+
+-- 3c Listar todos modelos de carro que existem na base de dados, sem repetições.
+select modelo as 'Modelos Disponiveis'
+from carros
+group by modelo;
+
+select distinct modelo as 'Modelos Disponiveis' from carros;
+
+-- 3d Listar o nome e a localidade do fornecedor com o preço da compra maior.
+select fnd.nomedaempresa as 'Nome Fornecedor', fnd.localidade as 'Localidade'
+from fornecedores as fnd
+inner join compras as cmp on fnd.codigodofornecedor=cmp.codigodofornecedor
+where cmp.precocompra=(select max(precocompra) from compras);
+
+select nomedaempresa, localidade
+from fornecedores f
+inner join compras c on c.codigodofornecedor = f.codigodofornecedor
+order by c.precocompra desc limit 1;
+
+-- 3e Listar os fornecedores cujo número de telefone começa por 91.
+select *
+from fornecedores
+where telefone like '91%';
+
+-- 3f Listar todos os fornecedores cujo Código Postal não começa por 4400.
+select *
+from fornecedores
+where codigopostal not like '4400%';
+
+-- 3g Listar  o  número  de compras  por  cor,  ordenado  pelo  número  de  compras,  de forma descendente.
+select cor as 'Cor do Carro', count(cor) as 'Número de Compras'
+from compras group by cor order by count(cor) desc;
+
+-- 3h Listar o nome dos fornecedores dos carros que ainda não têm nenhuma compra.
+select fnd.nomedaempresa as 'Nome Fornecedor sem nenhuma compra'
+from fornecedores as fnd
+left join compras as cmp on fnd.codigodofornecedor=cmp.codigodofornecedor
+where (select count(cmp.codigodofornecedor))=0;
+-- ou
+select nomedaempresa as 'Nome Fornecedor sem nenhuma compra'
+from fornecedores as fnd
+where not exists (select codigodofornecedor from compras as cmp where fnd.codigodofornecedor=cmp.codigodofornecedor);
+-- ou
+select distinct fnd.nomedaempresa as 'Nome Fornecedor sem nenhuma compra'
+from fornecedores as fnd
+left join compras as cmp on fnd.codigodofornecedor=cmp.codigodofornecedor
+where cmp.codigodofornecedor is null;
+
+-- 3i Listar os vendedores que já tiveram mais de 5 carros comprados.
+select vdr.*, count(vds.codigodovendedor) as 'Quantidade de carros que foram comprados (+5)'
+from vendedores as vdr
+inner join vendas as vds on vdr.codigodovendedor=vds.codigodovendedor
+group by vdr.codigodovendedor
+having count(vds.codigodovendedor) > 5;
+
+-- 3j Listar a cor de carro mais comprada.
+select cor as 'Cor de carro mais comprada', count(cor) as 'Compras'
+from compras
+group by cor
+order by count(cor) desc limit 1;
+
+select cor as 'Cor de carro mais comprada'
+from compras
+group by cor
+having count(codigodacompra)=(select count(codigodacompra) from compras group by cor order by count(cor) desc limit 1);
+
+-- 3k Listar o nome do fornecedor com mais compras em 2022.
+select fnd.nomedaempresa as 'Nome Fornecedor com mais compras em 2022', count(cmp.codigodofornecedor)
+from fornecedores as fnd
+inner join compras as cmp on fnd.codigodofornecedor=cmp.codigodofornecedor
+where year(cmp.datadacompra)=2022
+order by count(cmp.codigodofornecedor) desc limit 1;
+
+select fnd.nomedaempresa as 'Nome Fornecedor com mais compras em 2022'
+from fornecedores as fnd
+inner join compras as cmp on fnd.codigodofornecedor=cmp.codigodofornecedor
+where year(cmp.datadacompra)=2022
+group by fnd.nomedaempresa
+having count(cmp.codigodofornecedor)=(select count(codigodofornecedor) from compras where year(datadacompra)=2022 group by codigodofornecedor order by count(codigodofornecedor) desc limit 1);
+
+-- 3l Listar o carro que foi vendido mais recentemente.
+SELECT c.marca, c.modelo, v.data as 'Data do último carro vendido'
+FROM carros c
+INNER JOIN compras co ON c.codigodocarro = co.codigodocarro
+INNER JOIN vendas v ON co.codigodacompra = v.codigodacompra
+ORDER BY v.data DESC
+LIMIT 1;
+
+select car.*, vds.data as 'Data do último carro vendido'
+from carros as car
+inner join compras as cmp on car.codigodocarro=cmp.codigodocarro
+inner join vendas as vds on cmp.codigodacompra=vds.codigodacompra
+where vds.data=(select max(data) from vendas);
