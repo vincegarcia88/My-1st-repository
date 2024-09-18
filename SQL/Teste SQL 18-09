@@ -1,0 +1,115 @@
+/*1 - Escreva o código em SQL necessário para criar as duas tabelas com o nome de 
+“Funcionarios” e “Departamentos”, contendo os atributos como a figura acima ilustra, 
+considerando, que todos os campos são de preenchimento obrigatório, exceto a data de 
+nascimento na tabela “Funcionario”.*/
+
+CREATE DATABASE IF NOT EXISTS empresa;
+
+-- Selecionar o banco de dados
+USE empresa;
+
+CREATE TABLE Funcionarios (
+    funcionario_id INT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    sobrenome VARCHAR(100) NOT NULL,
+    data_nascimento DATE,
+    altura FLOAT NOT NULL,
+    localidade VARCHAR(100) NOT NULL,
+	  departamento_id INT NOT NULL,
+    departamento VARCHAR (100) NOT NULL,
+    FOREIGN KEY (departamento_id) REFERENCES Departamentos(departamento_id)
+);
+
+CREATE TABLE Departamentos (
+departamento_id INT PRIMARY KEY,
+departamento VARCHAR (100) NOT NULL,
+nome VARCHAR(100) NOT NULL,
+localidade VARCHAR(100) NOT NULL
+);
+
+-- 2. Insira os dados nas tabelas criadas (tal como apresentado)
+
+INSERT INTO Funcionarios (funcionario_id, nome, sobrenome, data_nascimento, localidade, departamento_id) VALUES
+(1, 'João', 'Santos', '1980-02-24', 'Valença', 41),
+(2, 'Miguel', 'Silva', '1966-04-02', 'Viana do Castelo', 43),
+(3, 'Carolina', 'Souza', '1971-11-12', 'Valença', 44),
+(4, 'Patricia', 'Patricio', '1975-01-31', 'Braga', 42),
+(5, 'Maria', 'Santos', '', 'Porto', 42),
+(6, 'Rodrigo', 'Gomes', '1969-03-21', 'Viana do Castelo', 44);
+
+INSERT INTO Departamentos (departamento_id, departamento, funcionario_id) VALUES
+(1, 'Marketing', '41'),
+(2, 'Informática','43'),
+(3, 'Recursos Humanos','44'),
+(4, 'Financeiro','42'),
+(5,'Higiene e Segurança','42');
+
+
+-- 3. Escreva consultas em SQL que permitam:
+
+/*A. Listar o nome dos funcionários do Departamento de Recursos Humanos que 
+meçam mais de 1.80, ordenando pelo nome do funcionário. */
+
+SELECT f.nome
+FROM Funcionarios f 
+INNER JOIN Departamento d ON f.departamento = d.departamento
+WHERE d.nome = 'Recursos Humanos' AND f.altura > 1.80
+ORDER BY f.nome;
+
+-- B. Determinar qual a média de altura dos funcionários de Marketing.
+
+SELECT AVG(altura) AS media_altura
+FROM funcionarios
+WHERE departamento = 'Marketing';
+
+
+/* C. Determinar os nomes dos funcionários que são de Valença ou do Porto,
+   e que pertencem ao departamento de Informática. */
+
+
+SELECT f.nome
+FROM Funcionarios f
+INNER JOIN Departamento d ON f.Departamento = d.departamento
+WHERE (f.localidade  = 'Valença' OR f.localidade = 'Porto')
+AND d.departamento = 'Informática';
+
+/* D - Determinar o nome do funcionário e o nome do departamento dos funcionários 
+que nasceram na década de 1980.*/
+
+SELECT f.nome AS funcionario, d.nome AS departamento
+FROM Funcionarios f
+INNER JOIN departamento.d ON f.departamento = d.departamento_id
+WHERE f.data_nascimento >= '1980-01-01' AND f.data_nascimento < '1990-01-01';
+
+-- E). Determinar o nome do funcionário mais baixo.
+SELECT f.nome
+FROM Funcionarios f
+WHERE altura = (SELECT MIN(altura) FROM funcionarios);
+
+
+-- F) Liste o Número e o Nome dos funcionários que 
+-- não existe a indicação da sua data de nascimento.
+
+SELECT f.numero AND f.nome
+FROM funcionarios f
+WHERE data_nascimento is NULL;
+
+ -- G) Liste quantos funcionários existem. 
+SELECT COUNT(*) AS total_funcionarios
+FROM funcionarios;
+
+/*H) Obtenha uma lista dos funcionários, ordenada pela altura, do mais alto até ao 
+mais baixo, e como segundo critério de ordenação coloque o nome do funcionário
+de forma ascendente */
+
+SELECT *
+FROM funcionarios
+ORDER BY altura DESC, nome ASC;
+
+/*I)  Liste o nome e data de nascimento dos funcionários que fazem anos no próximo 
+mês, ordenando pelo aniversário mais próximo. */
+
+SELECT nome, data_nascimento
+FROM funcionarios
+WHERE MONTH(data_nascimento) = 10
+ORDER BY DAY(data_nascimento);
