@@ -1,0 +1,38 @@
+#SQL Database
+
+# TABELAS SQL
+
+import sqlite3
+db = "base_dados_projeto.db"
+
+conn = sqlite3.connect(db)
+cursor = conn.cursor()
+
+cursor.execute ("""CREATE TABLE IF NOT EXISTS status(
+                ID_status INTEGER PRIMARY KEY AUTOINCREMENT,
+                NOME_status VARCHAR
+                )""")
+#cursor.execute("""DROP TABLE status""")
+
+#cursor.execute ("INSERT INTO status (NOME_status) VALUES (?)", ("Não Concluido",))
+#cursor.execute ("DELETE FROM status WHERE ID_status=3") 
+
+cursor.execute ("""CREATE TABLE IF NOT EXISTS prioridade(
+                ID_Prioridade INTEGER PRIMARY KEY AUTOINCREMENT,
+                NOME VARCHAR
+                )""")
+#cursor.execute("""DROP TABLE prioridade""")
+#cursor.execute ("INSERT INTO prioridade (NOME) VALUES (?)", ("Alta",))
+
+cursor.execute ("""CREATE TABLE IF NOT EXISTS lista_tarefas(
+                ID_tarefas INTEGER PRIMARY KEY AUTOINCREMENT,
+                Nome VARCHAR,
+                Descricao VARCHAR,
+                ID_status INTEGER,
+                ID_Prioridade VARCHAR,
+                FOREIGN KEY (ID_Prioridade) REFERENCES prioridade (ID_Prioridade),
+                FOREIGN KEY (ID_status) REFERENCES status(ID_status))""")
+
+#cursor.execute ("""DROP TABLE IF EXISTS tarefas""")
+
+conn.commit()
