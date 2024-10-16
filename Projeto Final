@@ -1,0 +1,125 @@
+#ProjetoFinal
+
+"""O projeto consiste em criar um sistema de lista de tarefas onde o utilizador pode adicionar tarefas, definir prioridades, marcar tarefas como concluídas, remover tarefas concluídas, e exibir todas as tarefas pendentes com as suas respectivas prioridades.
+Funcionalidades:
+
+Menu Principal com as opções:
+- Adicionar Tarefa
+- Mostrar Tarefas
+- Marcar Tarefa como Concluída
+- Remover Tarefas Concluídas
+- Sair
+
+Adicionar Tarefa: O utilizador pode adicionar uma tarefa fornecendo a descrição e a prioridade 
+(por exemplo, Alta, Média, Baixa). Essas informações são armazenadas numa lista de dicionários.
+
+Mostrar Tarefas:
+Exibir uma lista de todas as tarefas pendentes, mostrando a descrição e a prioridade.
+As tarefas podem ser exibidas por ordem de prioridade ou de registo.
+
+Marcar Tarefa como Concluída:Permitir ao utilizador marcar uma tarefa como concluída, removendo-a da lista de pendentes ou movendo-a para uma lista de tarefas concluídas.
+
+Remover Tarefas Concluídas:Remover todas as tarefas que foram marcadas como concluídas da lista.
+
+Sair:Encerrar o programa.
+
+Requisitos Técnicos:Uso de Listas: A lista deve ser usada para armazenar todas as tarefas.
+Uso de Dicionários: Cada tarefa deve ser representada por um dicionário com as chaves descrição, prioridade e concluída.
+
+Dicas:Comecem pelo menu principal e por implementar as funcionalidades básicas.
+Pensem em como usar um dicionário para representar cada tarefa e como armazenar isso numa lista.
+Ao marcar uma tarefa como concluída, considerem mudar o valor de uma chave concluída para True.
+Implementem a funcionalidade de remover tarefas concluídas de maneira que ela só apague as que estão marcadas como concluídas.
+
+Desafio Adicional (Opcional):
+- Adicionar uma funcionalidade para editar a descrição ou a prioridade de uma tarefa.
+- Permitir ao utilizador ordenar as tarefas por prioridade ou data de registo antes de exibir."""
+
+import sqlite3
+db = "base_dados_projeto.db"
+
+conn = sqlite3.connect(db)
+cursor = conn.cursor()
+
+def adicionar_tarefa(nome_tarefa, descricao_tarefa, id_status, id_prioridade):
+    
+    cursor.execute ("""INSERT INTO lista_tarefas (Nome, Descricao, ID_status,ID_prioridade) 
+                    VALUES (?,?,?,?)""", (nome_tarefa, descricao_tarefa, id_status, id_prioridade))
+    conn.commit()
+
+def mostrar_tarefas(): #() Especifica as colunas onde os dados serão inseridos.
+    cursor.execute("SELECT * FROM lista_tarefas")
+    rows = cursor.fetchall()
+
+    if not rows:
+        print("Não há tarefas pendentes.")
+
+    else: 
+        for row in rows:
+            print(row)
+            
+conn.commit()
+
+def marcar_tarefa_concluida(id_tarefa):
+    cursor.execute("UPDATE lista_tarefas SET ID_status = 2 WHERE ID_tarefas = ?", (id_tarefa,))
+    rows = cursor.fetchall()
+
+    if not rows:
+        print("Não há tarefas a serem marcadas.")
+
+    else: 
+        for row in rows:
+           print(row)
+
+    conn.commit()
+
+    # SET ID_status = 2: Define o novo valor para a coluna ID_status. 
+    # Aqui, você está assumindo que o valor 2 indica que a tarefa foi concluída.
+    # WHERE ID_tarefas = ?: Especifica qual tarefa deve ser atualizada, 
+    # usando um parâmetro para evitar injeção SQL.
+
+def remover_tarefas_concluidas(id_tarefa):
+    cursor.execute("DELETE FROM lista_tarefas WHERE ID_tarefas = ?", (id_tarefa,))
+    
+    conn.commit()
+
+def menu():    
+    while True:
+        print("\nMenu Principal")
+        print("1. Adicionar Tarefa")
+        print("2. Mostrar Tarefas")
+        print("3. Marcar Tarefa como Concluída")
+        print("4. Remover Tarefas Concluídas")
+        print("5. Sair")
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == '1':
+            nome_tarefa = input("Informe a tarefa: ")
+            descricao_tarefa = input("Descreva a tarefa: ")
+            id_prioridade = int(input("Indique a prioridade: \n[1] Baixa \n[2] Media \n[3] Alta: "))
+            id_status = int(input("Indique o status da tarefa: \n[1] Concluido \n[2] Não Concluido: "))
+        
+            adicionar_tarefa(nome_tarefa, descricao_tarefa, id_prioridade, id_status)
+
+        elif opcao == '2':
+            mostrar_tarefas()            
+
+        elif opcao == '3':
+            id_tarefa = int(input("Informe o ID da tarefa a ser marcada como concluída: "))
+            marcar_tarefa_concluida(id_tarefa)
+
+        elif opcao == '4':
+            id_tarefa = int(input("Informe o ID da tarefa a ser removida: "))
+            remover_tarefas_concluidas(id_tarefa)
+
+        elif opcao == '5':
+            print("Saindo do sistema.")
+            break
+
+        else:
+            print("Opção inválida, tente novamente.")
+
+if __name__ == "__main__":
+
+    menu()
